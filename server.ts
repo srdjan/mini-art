@@ -114,29 +114,58 @@ document.getElementById("randomize")?.addEventListener("click", () => {
   window.location.href = "/?random=8";
 });
 
-// Copy link buttons
+// Save buttons - open as standalone HTML in new tab
 document.addEventListener("click", async (e) => {
   const btn = e.target.closest(".copy-btn");
   if (!btn) return;
 
-  const params = btn.dataset.params;
-  const url = window.location.origin + window.location.pathname + "?" + params;
+  const attrs = btn.dataset.attrs;
+  const title = btn.dataset.title;
 
   try {
-    await navigator.clipboard.writeText(url);
+    // Get the actual mini-art-bw element to clone
+    const artElement = btn.closest('.card').querySelector('mini-art-bw');
+
+    // Fetch Web Component code
+    const jsResponse = await fetch("/web/mini-art-bw.js");
+    const jsCode = await jsResponse.text();
+
+    // Open new window
+    const newWin = window.open('', '_blank');
+    if (!newWin) throw new Error('Popup blocked');
+
+    // Write basic HTML structure
+    newWin.document.open();
+    newWin.document.write('<!DOCTYPE html><html><head><meta charset="utf-8">');
+    newWin.document.write('<title>' + title.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</title>');
+    newWin.document.write('<meta name="viewport" content="width=device-width,initial-scale=1">');
+    newWin.document.write('<style>body { margin:0; display:grid; place-items:center; min-height:100vh; background:#f5f5f5; }</style>');
+    newWin.document.write('</head><body></body></html>');
+    newWin.document.close();
+
+    // Clone and append the art element (preserves shadow DOM)
+    const clonedArt = artElement.cloneNode(true);
+    newWin.document.body.appendChild(clonedArt);
+
+    // Add Web Component script
+    const script = newWin.document.createElement('script');
+    script.type = 'module';
+    script.textContent = jsCode;
+    newWin.document.body.appendChild(script);
 
     // Visual feedback
     const originalText = btn.innerHTML;
     btn.classList.add("copied");
-    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!';
+    btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg> Opened!';
 
     setTimeout(() => {
       btn.classList.remove("copied");
       btn.innerHTML = originalText;
     }, 2000);
   } catch (err) {
-    console.error("Failed to copy:", err);
-    btn.textContent = "Failed to copy";
+    console.error("Failed to open:", err);
+    const originalText = btn.innerHTML;
+    btn.textContent = "Failed to open";
     setTimeout(() => {
       btn.innerHTML = originalText;
     }, 2000);
@@ -166,7 +195,7 @@ function renderTile(attrs: Record<string, string | boolean | undefined>) {
     bg,
   } = attrs;
 
-  const attr = (k: string, v: any) =>
+  const attr = (k: string, v: string | boolean | undefined) =>
     v == null || v === false ? "" : (v === true ? ` ${k}` : ` ${k}="${v}"`);
   const a = attr("template", template) + attr("size", size) + attr("seed", seed) + attr("hue", hue) +
     attr("sat", sat) +
@@ -176,29 +205,23 @@ function renderTile(attrs: Record<string, string | boolean | undefined>) {
   // Pre-render the same markup the element would produce (declarative shadow DOM)
   const shadow = renderComponentShadow(attrsToConfig(attrs));
 
-  // Build query string for sharing
-  const params = new URLSearchParams();
-  if (template) params.set("template", template as string);
-  if (seed) params.set("seed", seed as string);
-  if (lit) params.set("lit", lit as string);
-  if (cell) params.set("cell", cell as string);
-  if (r) params.set("r", r as string);
-  if (a1) params.set("a1", a1 as string);
-  if (a2) params.set("a2", a2 as string);
-  if (a3) params.set("a3", a3 as string);
-  if (animate) params.set("animate", "");
-  if (bg) params.set("bg", bg as string);
-  const queryString = params.toString();
+  // Build title for exported HTML
+  const title = seed
+    ? `Mini Art - Seed ${seed}`
+    : (template && typeof template === "string")
+    ? `Mini Art - ${template.charAt(0).toUpperCase() + template.slice(1)}`
+    : "Mini Art";
 
   return /*html*/ `<div class="card">
     <mini-art-bw${a}>${shadow}</mini-art-bw>
     <div class="card-actions">
-      <button class="copy-btn" data-params="${queryString}" title="Copy link to this artwork">
+      <button class="copy-btn" data-attrs="${a.trim().replace(/"/g, '&quot;')}" data-title="${title}" title="Show in new tab">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
         </svg>
-        Copy Link
+        Show
       </button>
       <small>${
     [
