@@ -1,0 +1,10 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-net --allow-env --allow-read=src/web server.ts",
+    "dev:watch": "deno run --watch --allow-net --allow-env --allow-read=src/web server.ts",
+    "start": "deno run --allow-net --allow-env --allow-read=src/web server.ts"
+  },
+  "imports": {
+    "@srdjan/bluesky-bot": "jsr:@srdjan/bluesky-bot@^1.1.2"
+  }
+}
