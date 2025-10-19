@@ -20,9 +20,8 @@ Deno.serve({ port: Number(Deno.env.get("PORT") ?? "8070") }, async (req) => {
   const tiles: string[] = [];
 
   // Check for ?random query param
-  const randomCount = url.searchParams.get("random");
-  if (randomCount) {
-    const count = Number(randomCount) || 6;
+  if (url.searchParams.has("random")) {
+    const count = Number(url.searchParams.get("random")) || 8;
     Array.from({ length: count }, () => tiles.push(renderTile(randomizeAttrs())));
   } else {
     // If query params given, render a tile from them first
@@ -32,7 +31,7 @@ Deno.serve({ port: Number(Deno.env.get("PORT") ?? "8070") }, async (req) => {
     );
     if (hasQ) tiles.push(renderTile(qAttrs));
 
-    // Canonical examples - showcase variety of backgrounds
+    // Canonical examples - showcase variety of backgrounds (8 total)
     tiles.push(
       // Grayscale backgrounds (default)
       renderTile({ seed: "1", size: "280px" }),
@@ -43,17 +42,13 @@ Deno.serve({ port: Number(Deno.env.get("PORT") ?? "8070") }, async (req) => {
       // Vibrant colors
       renderTile({ seed: "2", size: "280px", bg: "pink", template: "geometric" }),
       renderTile({ seed: "6", size: "280px", bg: "cyan", template: "radial" }),
-      renderTile({ seed: "1", size: "280px", bg: "green", template: "grid" }),
-      renderTile({ seed: "3", size: "280px", bg: "blue", template: "angular" }),
       // Muted/soft colors
       renderTile({ seed: "4", size: "280px", bg: "slate" }),
-      renderTile({ seed: "2", size: "280px", bg: "orange", template: "grid" }),
-      renderTile({ seed: "5", size: "280px", bg: "softblue" }),
       renderTile({ seed: "1", size: "280px", bg: "paleblue", template: "radial" }),
     );
   }
 
-  return new Response(renderPage(tiles, "mini-art-bw (SSR + Shadow DOM)"), {
+  return new Response(renderPage(tiles, "mini-art (SSR + Shadow DOM)"), {
     headers: {
       "content-type": "text/html; charset=utf-8",
     },
@@ -116,7 +111,7 @@ function renderPage(tiles: string[], title: string): string {
 <script type="module">
 // Randomize button: reload with random tiles
 document.getElementById("randomize")?.addEventListener("click", () => {
-  window.location.href = "/?random=6";
+  window.location.href = "/?random=8";
 });
 
 // Copy link buttons
