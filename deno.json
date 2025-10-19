@@ -2,9 +2,10 @@
   "tasks": {
     "dev": "deno run --allow-net --allow-env --allow-read=src/web server.ts",
     "dev:watch": "deno run --watch --allow-net --allow-env --allow-read=src/web server.ts",
-    "start": "deno run --allow-net --allow-env --allow-read=src/web server.ts"
+    "start": "deno run --allow-net --allow-env --allow-read=src/web server.ts",
+    "bsky": "deno run -A jsr:@srdjan/bluesky-botdeno update "
   },
   "imports": {
-    "@srdjan/bluesky-bot": "jsr:@srdjan/bluesky-bot@^1.1.2"
+    "@srdjan/bluesky-bot": "jsr:@srdjan/bluesky-bot@^1.3.0"
   }
 }
