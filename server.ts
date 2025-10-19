@@ -4,7 +4,7 @@ import { queryToAttrs } from "./src/domain/parse.ts";
 import { randomizeAttrs } from "./src/domain/randomize.ts";
 
 // server.ts
-// Deno SSR + Declarative Shadow DOM + single-file Web Component (black & white only)
+// Deno SSR + Declarative Shadow DOM, single-file Web Component
 Deno.serve({ port: Number(Deno.env.get("PORT") ?? "8070") }, async (req) => {
   const url = new URL(req.url);
 
@@ -93,7 +93,7 @@ function renderPage(tiles: string[], title: string): string {
 <header>
   <div>
     <h1 style="margin:0;font-size:16px">${title}</h1>
-    <small>Pure CSS • black & white • minimalist geometric patterns</small>
+    <small>Pure CSS generative art • minimalist geometric patterns</small>
   </div>
   <nav>
     <a href="https://github.com/srdjan/mini-art" target="_blank" rel="noopener noreferrer" class="github-link" title="View on GitHub">
@@ -145,14 +145,6 @@ document.addEventListener("click", async (e) => {
     setTimeout(() => {
       btn.innerHTML = originalText;
     }, 2000);
-  }
-});
-
-// Demo: dynamic property updates
-window.addEventListener("DOMContentLoaded", () => {
-  const el = document.querySelector("mini-art-bw[seed='2']");
-  if (el) {
-    setTimeout(() => { el.lit = "72%"; }, 2000);
   }
 });
 </script>

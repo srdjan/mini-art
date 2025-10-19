@@ -1,6 +1,6 @@
 /**
  * mini-art-bw — Web Component module
- * Pure CSS, black & white mini art inside Shadow DOM.
+ * Pure CSS, generative art inside Shadow DOM.
  *
  * Attributes:
  *  - size: CSS length (tile width)

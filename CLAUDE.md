@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**mini-art-bw** is a Deno-based SSR application that demonstrates **Declarative Shadow DOM** with a custom Web Component (`<mini-art-bw>`). The component generates black & white generative art using **pure CSS gradients** with no canvas or images.
+**mini-art-bw** is a Deno-based SSR application that demonstrates **Declarative Shadow DOM** with a custom Web Component (`<mini-art-bw>`). The component generates generative art using **pure CSS gradients** with no canvas or images.
 
 ## Development Commands
 
@@ -176,13 +176,6 @@ deno task dev:watch
 3. Mirror changes in [src/web/mini-art-bw.js](src/web/mini-art-bw.js) `#template()` method
 
 ## Important Constraints
-
-**Black & White Only**: All color output is grayscale
-- `sat` is coerced to `0%`
-- `hue` is accepted but has no visual effect
-- Light gray background via `hsl(0, 0%, var(--L))` provides base tone (50-70% lightness)
-- Patterns use pure colors: `#000` (black), `#fff` (white), `#888` (mid-gray)
-- Background and patterns combine via `background-blend-mode`
 
 **SSR-Client Parity**: Keep these files in sync
 - [src/domain/bw-style.ts](src/domain/bw-style.ts) (TypeScript for SSR) ↔ [src/web/mini-art-bw.js](src/web/mini-art-bw.js) template (vanilla JS)
