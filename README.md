@@ -1,7 +1,9 @@
 # Generative art Web Component 
 
 A minimal **Deno** server that SSR-renders generative art using a **declarative Shadow DOM** Web Component `<mini-art-bw>`.
-The component produces **black & white** “mini art” tiles using **only CSS gradients**—no canvas, no images... Pure CSS, Black & White
+The component produces **generative** “mini art” tiles using **only CSS gradients**—no canvas, no images... Pure CSS...
+
+[See It Live!](https://mini-art.timok.deno.net/)
 
 ## Run
 
