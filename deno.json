@@ -6,6 +6,6 @@
     "bsky": "deno run -A jsr:@srdjan/bluesky-botdeno update "
   },
   "imports": {
-    "@srdjan/bluesky-bot": "jsr:@srdjan/bluesky-bot@^1.3.0"
+    "@srdjan/bluesky-bot": "jsr:@srdjan/bluesky-bot@1"
   }
 }

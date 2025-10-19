@@ -1,4 +1,4 @@
-import type { ArtConfig, Percent, Angle, TemplateId } from "../types.ts";
+import type { ArtConfig, BgColor, Percent, Angle, TemplateId } from "../types.ts";
 
 export const DEFAULTS = {
   size: "min(72vmin,420px)",
@@ -9,6 +9,20 @@ export const DEFAULTS = {
   a2: ".125turn" as Angle,
   a3: ".33turn" as Angle,
 } as const;
+
+const BG_COLORS: Record<BgColor, string> = {
+  white: "#ffffff",
+  black: "#000000",
+  yellow: "#ffd700",
+  pink: "#f7768e",      // Bright pink
+  green: "#9ece6a",     // Vivid green
+  blue: "#7aa2f7",      // Electric blue
+  slate: "#7b82a3",     // Muted slate
+  orange: "#ff9e64",    // Warm orange
+  softblue: "#c0caf5",  // Soft blue
+  cyan: "#89ddff",      // Cyan
+  paleblue: "#e3ecff",  // Pale blue-white
+};
 
 export const BLEND_MODES = "normal, multiply, normal" as const;
 
@@ -71,5 +85,9 @@ const TEMPLATES: Record<TemplateId, (c: ArtConfig) => readonly string[]> = {
 export const backgroundLayers = (c: ArtConfig): readonly string[] => {
   const template = c.template ?? "geometric";
   return TEMPLATES[template](c);
+};
+
+export const backgroundColor = (c: ArtConfig): string => {
+  return c.bg ? BG_COLORS[c.bg] : `hsl(0, 0%, ${c.L ?? DEFAULTS.L})`;
 };
 

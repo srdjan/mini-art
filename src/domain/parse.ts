@@ -1,4 +1,4 @@
-import type { ArtConfig, Length, SeedId, TemplateId } from "../types.ts";
+import type { ArtConfig, BgColor, Length, SeedId, TemplateId } from "../types.ts";
 import { BW_SEEDS } from "../seeds/bw-seeds.ts";
 
 export type Attrs = Record<string, string | boolean | undefined>;
@@ -25,6 +25,7 @@ export const attrsToConfig = (attrs: Attrs): ArtConfig => {
     ...(typeof attrs.a2 === "string" ? { a2: attrs.a2 as any } : {}),
     ...(typeof attrs.a3 === "string" ? { a3: attrs.a3 as any } : {}),
     ...(attrs.animate === true ? { animate: true } : {}),
+    ...(typeof attrs.bg === "string" ? { bg: attrs.bg as BgColor } : {}),
   };
 
   return { ...seedPreset, ...overrides };
@@ -43,4 +44,5 @@ export const queryToAttrs = (q: URLSearchParams): Attrs => ({
   a2: q.get("a2") ?? undefined,
   a3: q.get("a3") ?? undefined,
   animate: q.has("animate") ? true : undefined,
+  bg: q.get("bg") ?? undefined,
 });

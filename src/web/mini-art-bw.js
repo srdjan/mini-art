@@ -12,10 +12,11 @@
  *  - r: 0..1 (vignette radius)
  *  - a1,a2,a3: <angle> (pattern angles)
  *  - animate: presence boolean (spins a1/a2/a3)
+ *  - bg: "white" | "black" | "yellow" (background color)
  */
 class MiniArtBW extends HTMLElement {
   static observedAttributes = [
-    "template","hue","sat","lit","cell","r","a1","a2","a3","seed","size","animate"
+    "template","hue","sat","lit","cell","r","a1","a2","a3","seed","size","animate","bg"
   ];
 
   static seeds = {
@@ -25,6 +26,20 @@ class MiniArtBW extends HTMLElement {
     "4": { L: "50%", a1: ".20turn", a2: ".04turn", a3: ".28turn" },
     "5": { L: "65%", a1: ".33turn", a2: ".11turn", a3: ".63turn" },
     "6": { L: "56%", a1: ".41turn", a2: ".27turn", a3: ".79turn" },
+  };
+
+  static bgColors = {
+    white: "#ffffff",
+    black: "#000000",
+    yellow: "#ffd700",
+    pink: "#f7768e",      // Bright pink
+    green: "#9ece6a",     // Vivid green
+    blue: "#7aa2f7",      // Electric blue
+    slate: "#7b82a3",     // Muted slate
+    orange: "#ff9e64",    // Warm orange
+    softblue: "#c0caf5",  // Soft blue
+    cyan: "#89ddff",      // Cyan
+    paleblue: "#e3ecff",  // Pale blue-white
   };
 
   static templates = {
@@ -105,6 +120,15 @@ class MiniArtBW extends HTMLElement {
     map("a1","--a1");
     map("a2","--a2");
     map("a3","--a3");
+
+    // Background color: if bg attribute is set, use it; otherwise use grayscale
+    const bg = this.getAttribute("bg");
+    if (bg && MiniArtBW.bgColors[bg]) {
+      this._art.style.backgroundColor = MiniArtBW.bgColors[bg];
+    } else {
+      const L = this.getAttribute("lit") || this._art.style.getPropertyValue("--L") || "58%";
+      this._art.style.backgroundColor = `hsl(0, 0%, ${L})`;
+    }
 
     // Enforce grayscale
     this._art.style.setProperty("--SAT","0%");

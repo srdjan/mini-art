@@ -1,4 +1,4 @@
-import type { ArtConfig, Angle, Percent, Length, SeedId, TemplateId } from "../types.ts";
+import type { ArtConfig, Angle, Percent, Length, SeedId, TemplateId, BgColor } from "../types.ts";
 
 /**
  * Generates a random number between min and max (inclusive)
@@ -61,6 +61,27 @@ export const randomizeConfig = (): ArtConfig => {
 };
 
 /**
+ * Randomly picks a background color (including undefined for grayscale)
+ */
+const randomBg = (): BgColor | undefined => {
+  const backgrounds: readonly (BgColor | undefined)[] = [
+    "white",
+    "black",
+    "yellow",
+    "pink",
+    "green",
+    "blue",
+    "slate",
+    "orange",
+    "softblue",
+    "cyan",
+    "paleblue",
+    undefined, // grayscale
+  ];
+  return pick(backgrounds);
+};
+
+/**
  * Generates random attributes as a record (for use with attrsToConfig)
  * This variant can include 'seed' as a string attribute.
  */
@@ -69,6 +90,9 @@ export const randomizeAttrs = (): Record<string, string | boolean | undefined> =
   // Exclude "minimal" as it's too sparse for random generation
   const templates: readonly TemplateId[] = ["geometric", "grid", "radial", "angular"];
   const template = pick(templates);
+
+  // Randomly pick background color
+  const bg = randomBg();
 
   const useSeed = Math.random() < 0.5;
 
@@ -81,6 +105,7 @@ export const randomizeAttrs = (): Record<string, string | boolean | undefined> =
       cell: `${randomInt(8, 14)}px`, // Smaller range for denser patterns
       r: randomRange(0.80, 0.92).toFixed(2), // Tighter range for better visibility
       animate: Math.random() < 0.3,
+      bg,
     };
   }
 
@@ -94,5 +119,6 @@ export const randomizeAttrs = (): Record<string, string | boolean | undefined> =
     a2: `${randomRange(0, 1).toFixed(3)}turn`,
     a3: `${randomRange(0, 1).toFixed(3)}turn`,
     animate: Math.random() < 0.3,
+    bg,
   };
 };

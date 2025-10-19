@@ -1,5 +1,5 @@
 import type { ArtConfig } from "../types.ts";
-import { baseCssVars, BLEND_MODES, backgroundLayers, animations } from "./bw-style.ts";
+import { baseCssVars, BLEND_MODES, backgroundLayers, backgroundColor, animations } from "./bw-style.ts";
 
 const cssVarsString = (cfg: ArtConfig): string =>
   Object.entries(baseCssVars(cfg)).map(([k, v]) => `${k}: ${v};`).join("\n          ");
@@ -7,6 +7,7 @@ const cssVarsString = (cfg: ArtConfig): string =>
 const styleBlock = (cfg: ArtConfig): string => {
   const layers = backgroundLayers(cfg).join(",\n            ");
   const vars = cssVarsString(cfg);
+  const bgColor = backgroundColor(cfg);
   return `<style>
         :host{display:inline-block}
         :host([size]) .art{width:var(--size)}
@@ -14,7 +15,7 @@ const styleBlock = (cfg: ArtConfig): string => {
           ${vars}
           width:var(--size); aspect-ratio:1/1;
           border-radius:8px; overflow:clip;
-          background-color: hsl(0, 0%, var(--L));
+          background-color: ${bgColor};
           background-image:
             ${layers};
           background-blend-mode: ${BLEND_MODES};

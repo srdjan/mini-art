@@ -32,19 +32,24 @@ Deno.serve({ port: Number(Deno.env.get("PORT") ?? "8070") }, async (req) => {
     );
     if (hasQ) tiles.push(renderTile(qAttrs));
 
-    // Canonical examples
+    // Canonical examples - showcase variety of backgrounds
     tiles.push(
+      // Grayscale backgrounds (default)
       renderTile({ seed: "1", size: "280px" }),
       renderTile({ seed: "3", size: "280px", lit: "62%" }),
-      renderTile({ seed: "5", size: "280px", cell: "10px", r: ".90" }),
-      renderTile({
-        size: "280px",
-        a1: ".05turn",
-        a2: ".25turn",
-        a3: ".6turn",
-        lit: "70%",
-      }),
-      renderTile({ seed: "2", size: "280px", animate: true }),
+      // Basic colors
+      renderTile({ seed: "4", size: "280px", bg: "white" }),
+      renderTile({ seed: "5", size: "280px", bg: "black" }),
+      // Vibrant colors
+      renderTile({ seed: "2", size: "280px", bg: "pink", template: "geometric" }),
+      renderTile({ seed: "6", size: "280px", bg: "cyan", template: "radial" }),
+      renderTile({ seed: "1", size: "280px", bg: "green", template: "grid" }),
+      renderTile({ seed: "3", size: "280px", bg: "blue", template: "angular" }),
+      // Muted/soft colors
+      renderTile({ seed: "4", size: "280px", bg: "slate" }),
+      renderTile({ seed: "2", size: "280px", bg: "orange", template: "grid" }),
+      renderTile({ seed: "5", size: "280px", bg: "softblue" }),
+      renderTile({ seed: "1", size: "280px", bg: "paleblue", template: "radial" }),
     );
   }
 
@@ -63,15 +68,15 @@ function renderPage(tiles: string[], title: string): string {
 <title>mini-art-bw • ${title}</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <style>
-  body{margin:0;background:#0e0f12;color:#d1d5db;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
-  header{padding:1rem 1.25rem;border-bottom:1px solid #ffffff12;display:flex;justify-content:space-between;align-items:center}
+  body{margin:0;background:#f5f5f5;color:#1f2937;font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  header{padding:1rem 1.25rem;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;align-items:center}
   main{padding:1.25rem;display:grid;gap:1.25rem}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,280px);gap:1.25rem;justify-content:center}
   .card{display:grid;gap:.5rem;justify-items:center}
-  .card mini-art-bw{width:280px;height:280px}
+  .card mini-art-bw{width:280px;height:280px;background:#fff;border:1px solid #d1d5db;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
   .card-actions{display:flex;flex-direction:column;gap:.25rem;align-items:center;width:100%}
-  .copy-btn{display:inline-flex;align-items:center;gap:.375rem;background:#374151;color:#d1d5db;border:1px solid #4b5563;padding:.375rem .75rem;border-radius:6px;cursor:pointer;font-size:13px;transition:all .15s}
-  .copy-btn:hover{background:#4b5563;border-color:#6b7280}
+  .copy-btn{display:inline-flex;align-items:center;gap:.375rem;background:#fff;color:#374151;border:1px solid #d1d5db;padding:.375rem .75rem;border-radius:6px;cursor:pointer;font-size:13px;transition:all .15s}
+  .copy-btn:hover{background:#f9fafb;border-color:#9ca3af}
   .copy-btn.copied{background:#059669;border-color:#10b981;color:#fff}
   .copy-btn svg{flex-shrink:0}
   small{opacity:.7;font-size:12px}
@@ -88,7 +93,6 @@ function renderPage(tiles: string[], title: string): string {
     <small>Pure CSS • black & white • minimalist geometric patterns</small>
   </div>
   <nav>
-    <a href="/">Gallery</a>
     <button id="randomize">Randomize</button>
   </nav>
 </header>
@@ -164,6 +168,7 @@ function renderTile(attrs: Record<string, string | boolean | undefined>) {
     a2,
     a3,
     animate,
+    bg,
   } = attrs;
 
   const attr = (k: string, v: any) =>
@@ -171,7 +176,7 @@ function renderTile(attrs: Record<string, string | boolean | undefined>) {
   const a = attr("template", template) + attr("size", size) + attr("seed", seed) + attr("hue", hue) +
     attr("sat", sat) +
     attr("lit", lit) + attr("cell", cell) + attr("r", r) + attr("a1", a1) +
-    attr("a2", a2) + attr("a3", a3) + attr("animate", animate);
+    attr("a2", a2) + attr("a3", a3) + attr("animate", animate) + attr("bg", bg);
 
   // Pre-render the same markup the element would produce (declarative shadow DOM)
   const shadow = renderComponentShadow(attrsToConfig(attrs));
@@ -187,6 +192,7 @@ function renderTile(attrs: Record<string, string | boolean | undefined>) {
   if (a2) params.set("a2", a2 as string);
   if (a3) params.set("a3", a3 as string);
   if (animate) params.set("animate", "");
+  if (bg) params.set("bg", bg as string);
   const queryString = params.toString();
 
   return /*html*/ `<div class="card">
@@ -210,6 +216,7 @@ function renderTile(attrs: Record<string, string | boolean | undefined>) {
       a2 ? `a2="${a2}"` : "",
       a3 ? `a3="${a3}"` : "",
       animate ? "animate" : "",
+      bg ? `bg="${bg}"` : "",
     ].filter(Boolean).join(" ")
   }</small>
     </div>
